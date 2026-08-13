@@ -1,0 +1,48 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String?  @unique
+  password  String?
+  role      String   @default("EMPLOYEE") // ADMIN or EMPLOYEE
+  createdAt DateTime @default(now())
+  results   Result[]
+}
+
+model Test {
+  id          String     @id @default(cuid())
+  title       String
+  description String?
+  createdAt   DateTime   @default(now())
+  questions   Question[]
+  results     Result[]
+}
+
+model Question {
+  id                 String   @id @default(cuid())
+  testId             String
+  test               Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
+  text               String
+  options            String   // JSON stringified array of options
+  correctAnswerIndex Int
+  createdAt          DateTime @default(now())
+}
+
+model Result {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  testId      String
+  test        Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
+  score       Int
+  answers     String?  // JSON string mapping question ID to selected option index
+  submittedAt DateTime @default(now())
+}
