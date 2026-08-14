@@ -10,9 +10,22 @@ export async function POST(request: Request) {
     const cookieStore = await cookies();
 
     if (role === "ADMIN") {
-      // For MVP, we still use the hardcoded admin, but you can change this to query Prisma for admins later
-      if (email === "admin@Pavictek.com" && password === "admin123") {
-        cookieStore.set('auth_session', JSON.stringify({ id: "admin-1", role: "ADMIN", name: "Admin User" }), {
+      let adminUser = await prisma.user.findFirst({ where: { role: "ADMIN" } });
+      
+      // Seed default admin if not exists
+      if (!adminUser) {
+        adminUser = await prisma.user.create({
+          data: {
+            name: "Admin User",
+            email: "admin@Pavictek.com",
+            password: "admin123",
+            role: "ADMIN"
+          }
+        });
+      }
+
+      if (email === adminUser.email && password === adminUser.password) {
+        cookieStore.set('auth_session', JSON.stringify({ id: adminUser.id, role: "ADMIN", name: adminUser.name }), {
           httpOnly: true,
           secure: process.env.NODE_ENV === 'production',
           sameSite: 'lax',

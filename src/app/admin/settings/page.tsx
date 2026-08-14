@@ -9,7 +9,7 @@ export default function AdminSettings() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
 
-  const handleChangePassword = (e: React.FormEvent) => {
+  const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setMessage({ type: "", text: "" });
@@ -20,14 +20,28 @@ export default function AdminSettings() {
       return;
     }
 
-    // Simulate API call
-    setTimeout(() => {
-      setMessage({ type: "success", text: "Password successfully updated." });
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
+    try {
+      const response = await fetch("/api/admin/password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ currentPassword, newPassword }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessage({ type: "success", text: "Password successfully updated." });
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+      } else {
+        setMessage({ type: "error", text: data.error || "Failed to update password." });
+      }
+    } catch (error) {
+      setMessage({ type: "error", text: "An error occurred while updating the password." });
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   return (
