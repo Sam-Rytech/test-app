@@ -7,10 +7,12 @@ export default function CreateTest() {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [timeLimit, setTimeLimit] = useState("");
   const [questions, setQuestions] = useState([
     { text: "", options: ["", ""], correctAnswerIndex: 0 }
   ]);
   const [loading, setLoading] = useState(false);
+  const [uploadingDoc, setUploadingDoc] = useState(false);
 
   const handleAddQuestion = () => {
     setQuestions([...questions, { text: "", options: ["", ""], correctAnswerIndex: 0 }]);
@@ -53,13 +55,47 @@ export default function CreateTest() {
     }
   };
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingDoc(true);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/tests/parse-docx", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to parse document");
+      }
+
+      const data = await res.json();
+      if (data.questions && data.questions.length > 0) {
+        setQuestions(data.questions);
+      } else {
+        alert("No questions found in the document. Please ensure it follows the format.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Error uploading document");
+    } finally {
+      setUploadingDoc(false);
+      // Reset file input
+      e.target.value = '';
+    }
+  };
+
   const handleSaveTest = async () => {
     setLoading(true);
     try {
       const res = await fetch("/api/tests", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, description, questions })
+        body: JSON.stringify({ title, description, timeLimit, questions })
       });
       
       if (!res.ok) {
@@ -105,6 +141,38 @@ export default function CreateTest() {
             placeholder="Briefly describe what this test covers."
             rows={3}
           />
+        </div>
+        <div className="form-group" style={{ marginTop: '20px' }}>
+          <label>Time Limit (Optional, in minutes)</label>
+          <input 
+            type="number" 
+            value={timeLimit} 
+            onChange={e => setTimeLimit(e.target.value)} 
+            placeholder="e.g. 30" 
+            min="1"
+          />
+        </div>
+      </div>
+
+      <div className="glass-panel" style={{ padding: '30px', marginBottom: '30px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <h2>Import from Word Document</h2>
+          <p style={{ color: 'var(--text-secondary)', marginTop: '5px' }}>
+            Upload a .docx file with questions. Use format: "1. Question", "A) Option", "*B) Correct Option".
+          </p>
+        </div>
+        <div>
+          <input
+            type="file"
+            accept=".docx"
+            id="docx-upload"
+            style={{ display: 'none' }}
+            onChange={handleFileUpload}
+            disabled={uploadingDoc}
+          />
+          <label htmlFor="docx-upload" className="btn btn-secondary" style={{ cursor: 'pointer' }}>
+            {uploadingDoc ? 'Uploading...' : 'Upload DOCX'}
+          </label>
         </div>
       </div>
 

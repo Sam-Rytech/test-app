@@ -1,16 +1,62 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function TestTaker({ test }: { test: any }) {
   const router = useRouter();
   const [answers, setAnswers] = useState<Record<string, number>>({});
+  const answersRef = useRef(answers);
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [shuffledQuestions, setShuffledQuestions] = useState<any[]>([]);
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
+
+  useEffect(() => {
+    answersRef.current = answers;
+  }, [answers]);
+
+  useEffect(() => {
+    // Shuffle questions on mount
+    const shuffled = [...test.questions].sort(() => Math.random() - 0.5);
+    setShuffledQuestions(shuffled);
+
+    // Initialize timer
+    if (test.timeLimit) {
+      setTimeLeft(test.timeLimit * 60);
+    }
+  }, [test]);
+
+  useEffect(() => {
+    if (timeLeft === null || timeLeft <= 0 || submitted) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev && prev <= 1) {
+          clearInterval(timer);
+          handleAutoSubmit();
+          return 0;
+        }
+        return prev ? prev - 1 : 0;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft, submitted]);
+
+  const handleAutoSubmit = async () => {
+    if (submitted) return;
+    await submitTest(answersRef.current);
+  };
+
+  const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  };
 
   const handleOptionSelect = (qId: string, oIndex: number) => {
     if (submitted) return;
@@ -18,12 +64,16 @@ export default function TestTaker({ test }: { test: any }) {
   };
 
   const handleSubmit = async () => {
+    await submitTest(answers);
+  };
+
+  const submitTest = async (currentAnswers: Record<string, number>) => {
     setLoading(true);
     setError("");
 
     let correct = 0;
     test.questions.forEach((q: any) => {
-      if (answers[q.id] === q.correctAnswerIndex) {
+      if (currentAnswers[q.id] === q.correctAnswerIndex) {
         correct++;
       }
     });
@@ -35,7 +85,7 @@ export default function TestTaker({ test }: { test: any }) {
       const res = await fetch("/api/results", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ testId: test.id, score: finalScore, answers })
+        body: JSON.stringify({ testId: test.id, score: finalScore, answers: currentAnswers })
       });
 
       if (!res.ok) {
@@ -64,6 +114,18 @@ export default function TestTaker({ test }: { test: any }) {
         }}>
           Score: {score}%
         </span>}
+        {!submitted && timeLeft !== null && (
+          <div style={{ 
+            fontSize: '1.5rem', 
+            fontWeight: 'bold', 
+            color: timeLeft < 60 ? 'var(--error-color)' : 'var(--text-primary)',
+            background: 'rgba(255, 255, 255, 0.05)',
+            padding: '8px 16px',
+            borderRadius: '8px'
+          }}>
+            ⏱ {formatTime(timeLeft)}
+          </div>
+        )}
       </div>
 
       {!submitted ? (
@@ -86,7 +148,7 @@ export default function TestTaker({ test }: { test: any }) {
         </div>
       )}
 
-      {test.questions.map((q: any, qIndex: number) => {
+      {shuffledQuestions.map((q: any, qIndex: number) => {
         const options = JSON.parse(q.options);
         return (
           <div key={q.id} className="glass-panel" style={{ padding: '30px', marginBottom: '24px' }}>

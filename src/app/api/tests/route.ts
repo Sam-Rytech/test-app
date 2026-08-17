@@ -3,7 +3,7 @@ import prisma from '@/lib/prisma';
 
 export async function POST(request: Request) {
   try {
-    const { title, description, questions } = await request.json();
+    const { title, description, timeLimit, questions } = await request.json();
 
     if (!title || !questions || questions.length === 0) {
       return NextResponse.json({ error: "Title and at least one question are required" }, { status: 400 });
@@ -13,6 +13,7 @@ export async function POST(request: Request) {
       data: {
         title,
         description,
+        timeLimit: timeLimit ? parseInt(timeLimit) : null,
         questions: {
           create: questions.map((q: any) => ({
             text: q.text,

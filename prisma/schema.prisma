@@ -21,6 +21,7 @@ model Test {
   id          String     @id @default(cuid())
   title       String
   description String?
+  timeLimit   Int?       // time limit in minutes
   createdAt   DateTime   @default(now())
   questions   Question[]
   results     Result[]
