@@ -1,11 +1,15 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Home() {
   return (
     <main className="container animate-fade-in">
       <div className="auth-container" style={{ minHeight: 'calc(100vh - 100px)' }}>
         <div className="auth-card glass-panel" style={{ maxWidth: '600px', padding: '60px 40px' }}>
-          <h1 style={{ fontSize: '3rem', marginBottom: '20px' }}>Pavictek Tests</h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '20px' }}>
+            <Image src="/logo.png" alt="Pavictek Logo" width={64} height={64} style={{ objectFit: 'contain' }} />
+            <h1 style={{ fontSize: '3rem', margin: 0 }}>Pavictek Tests</h1>
+          </div>
           <p style={{ fontSize: '1.2rem', marginBottom: '40px' }}>
             A premium internal platform for managing and taking organizational assessments.
           </p>

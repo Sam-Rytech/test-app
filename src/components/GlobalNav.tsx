@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 
 export default function GlobalNav({ session }: { session: any }) {
@@ -20,7 +21,10 @@ export default function GlobalNav({ session }: { session: any }) {
   return (
     <nav className="navbar animate-fade-in">
       <div className="container">
-        <Link href="/" className="nav-brand">Pavictek Tests</Link>
+        <Link href="/" className="nav-brand" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <Image src="/logo.png" alt="Pavictek Logo" width={32} height={32} style={{ objectFit: 'contain' }} />
+          <span>Pavictek Tests</span>
+        </Link>
         <div className="nav-links">
           {session ? (
             <>

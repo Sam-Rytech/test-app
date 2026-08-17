@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function Login() {
   const router = useRouter();
@@ -54,8 +55,11 @@ export default function Login() {
   return (
     <main className="auth-container animate-fade-in">
       <div className="auth-card glass-panel" style={{ padding: '40px' }}>
-        <h1>Welcome Back</h1>
-        <p>Log in to access Pavictek Tests</p>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+          <Image src="/logo.png" alt="Pavictek Logo" width={80} height={80} style={{ objectFit: 'contain' }} />
+        </div>
+        <h1 style={{ textAlign: 'center' }}>Welcome Back</h1>
+        <p style={{ textAlign: 'center' }}>Log in to access Pavictek Tests</p>
 
         {/* Tabs */}
         <div style={{ display: 'flex', marginBottom: '30px', borderBottom: '1px solid var(--border-color)' }}>
