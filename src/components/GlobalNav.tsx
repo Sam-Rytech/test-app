@@ -22,7 +22,7 @@ export default function GlobalNav({ session }: { session: any }) {
     <nav className="navbar animate-fade-in">
       <div className="container">
         <Link href="/" className="nav-brand" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <Image src="/logo.png" alt="Pavictek Logo" width={50} height={50} style={{ objectFit: 'contain' }} />
+          <Image src="/logo.png" alt="Pavictek Logo" width={75} height={75} style={{ objectFit: 'contain' }} />
           <span>Tests</span>
         </Link>
         <div className="nav-links">

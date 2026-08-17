@@ -7,7 +7,7 @@ export default function Home() {
       <div className="auth-container" style={{ minHeight: 'calc(100vh - 100px)' }}>
         <div className="auth-card glass-panel" style={{ maxWidth: '600px', padding: '60px 40px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '20px' }}>
-            <Image src="/logo.png" alt="Pavictek Logo" width={100} height={100} style={{ objectFit: 'contain' }} />
+            <Image src="/logo.png" alt="Pavictek Logo" width={150} height={150} style={{ objectFit: 'contain' }} />
             <h1 style={{ fontSize: '3rem', margin: 0 }}>Tests</h1>
           </div>
           <p style={{ fontSize: '1.2rem', marginBottom: '40px' }}>

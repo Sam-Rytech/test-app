@@ -56,7 +56,7 @@ export default function Login() {
     <main className="auth-container animate-fade-in">
       <div className="auth-card glass-panel" style={{ padding: '40px' }}>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-          <Image src="/logo.png" alt="Pavictek Logo" width={120} height={120} style={{ objectFit: 'contain' }} />
+          <Image src="/logo.png" alt="Pavictek Logo" width={180} height={180} style={{ objectFit: 'contain' }} />
         </div>
         <h1 style={{ textAlign: 'center' }}>Welcome Back</h1>
         <p style={{ textAlign: 'center' }}>Log in to access Pavictek Tests</p>
