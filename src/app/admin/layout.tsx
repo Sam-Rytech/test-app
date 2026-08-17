@@ -16,7 +16,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div className="admin-layout" style={{ display: 'flex', minHeight: '100vh' }}>
       <aside className="glass-panel" style={{ width: '250px', padding: '20px', borderRadius: '0', borderLeft: 'none', borderTop: 'none', borderBottom: 'none' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '30px' }}>
-          <Image src="/logo.png" alt="Pavictek Logo" width={40} height={40} style={{ objectFit: 'contain' }} />
+          <Image src="/logo.png" alt="Pavictek Logo" width={60} height={60} style={{ objectFit: 'contain' }} />
           <h2 style={{ margin: 0, fontSize: '1.5rem', background: 'linear-gradient(135deg, #fff, #a5b4fc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             Admin Panel
           </h2>

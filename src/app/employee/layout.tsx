@@ -17,8 +17,8 @@ export default function EmployeeLayout({ children }: { children: React.ReactNode
       <nav className="navbar" style={{ marginBottom: '0' }}>
         <div className="container">
           <div className="nav-brand" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Image src="/logo.png" alt="Pavictek Logo" width={32} height={32} style={{ objectFit: 'contain' }} />
-            <span>Pavictek Tests <span style={{ fontSize: '1rem', fontWeight: 400, color: 'var(--text-secondary)' }}>| Employee</span></span>
+            <Image src="/logo.png" alt="Pavictek Logo" width={50} height={50} style={{ objectFit: 'contain' }} />
+            <span>Tests <span style={{ fontSize: '1rem', fontWeight: 400, color: 'var(--text-secondary)' }}>| Employee</span></span>
           </div>
           <div className="nav-links">
             <Link href="/employee/dashboard" className="nav-link">Dashboard</Link>
